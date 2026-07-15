@@ -12,6 +12,12 @@ with the ability to share those details externally.
 - **English / Bahasa Malaysia** in-app language switch
 - Feature-based architecture, themed design tokens, unit tests
 
+## Preview
+
+<p align="center">
+  <img src="assets/preview.gif" width="280" alt="AeonApps preview — browsing, filtering, viewing and sharing a transaction" />
+</p>
+
 ## Features
 
 - **Bottom tab navigation** — Home, Accounts, Transactions, Recipients, More,
