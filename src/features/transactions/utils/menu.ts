@@ -1,4 +1,5 @@
 import { ActionSheetIOS, Alert, Platform } from 'react-native';
+import { translate } from '@/i18n';
 
 export interface TransactionActions {
   onViewDetails: () => void;
@@ -6,17 +7,27 @@ export interface TransactionActions {
   onCopyRef: () => void;
 }
 
-const LABELS = ['View details', 'Share', 'Copy Reference ID'];
-
-/** Presents the per-transaction "more actions" menu (native on iOS, Alert elsewhere). */
+/**
+ * Presents the per-transaction "more actions" menu (native on iOS, Alert
+ * elsewhere). Labels are resolved at call time so they honour the active
+ * language.
+ */
 export function showTransactionActions({ onViewDetails, onShare, onCopyRef }: TransactionActions): void {
+  const labels = [
+    translate('menu.viewDetails'),
+    translate('menu.share'),
+    translate('menu.copyRef'),
+  ];
   const handlers = [onViewDetails, onShare, onCopyRef];
 
   if (Platform.OS === 'ios') {
     ActionSheetIOS.showActionSheetWithOptions(
-      { options: [...LABELS, 'Cancel'], cancelButtonIndex: LABELS.length },
+      {
+        options: [...labels, translate('menu.cancel')],
+        cancelButtonIndex: labels.length,
+      },
       index => {
-        if (index < LABELS.length) {
+        if (index < labels.length) {
           handlers[index]();
         }
       },
@@ -24,10 +35,10 @@ export function showTransactionActions({ onViewDetails, onShare, onCopyRef }: Tr
     return;
   }
 
-  Alert.alert('Transaction', undefined, [
-    { text: LABELS[0], onPress: onViewDetails },
-    { text: LABELS[1], onPress: onShare },
-    { text: LABELS[2], onPress: onCopyRef },
-    { text: 'Cancel', style: 'cancel' },
+  Alert.alert(translate('menu.title'), undefined, [
+    { text: labels[0], onPress: onViewDetails },
+    { text: labels[1], onPress: onShare },
+    { text: labels[2], onPress: onCopyRef },
+    { text: translate('menu.cancel'), style: 'cancel' },
   ]);
 }

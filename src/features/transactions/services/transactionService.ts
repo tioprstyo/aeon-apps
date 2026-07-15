@@ -44,12 +44,14 @@ const MOCK_RESPONSE: TransactionsResponse = {
 const NETWORK_DELAY_MS = 800;
 
 export const transactionService = {
-  /** Returns the customer's latest transactions, newest first. */
+  /**
+   * Returns the customer's transactions as delivered by the backend. Ordering
+   * is intentionally left to the UI: the list sorts by date via the bottom
+   * sheet's "Sort by" filter, so this is the single source of sort truth.
+   */
   async fetchTransactions(): Promise<Transaction[]> {
     await new Promise<void>(resolve => setTimeout(() => resolve(), NETWORK_DELAY_MS));
 
-    return [...MOCK_RESPONSE.data].sort(
-      (a, b) => new Date(b.transferDate).getTime() - new Date(a.transferDate).getTime(),
-    );
+    return [...MOCK_RESPONSE.data];
   },
 };

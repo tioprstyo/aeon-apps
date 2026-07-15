@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Search, SlidersHorizontal } from 'lucide-react-native';
-import { IconButton } from '@/components';
+import { IconButton, LanguageToggle } from '@/components';
 import { colors, spacing, typography } from '@/theme';
+import { useTranslation } from '@/i18n';
 
 interface TransactionsHeaderProps {
   searchActive: boolean;
@@ -17,13 +18,18 @@ export function TransactionsHeader({
   onToggleSearch,
   onToggleFilters,
 }: TransactionsHeaderProps) {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
-        <Text style={styles.title}>Transactions</Text>
+        <Text style={styles.title} numberOfLines={1}>
+          {t('transactions.title')}
+        </Text>
         <View style={styles.actions}>
+          <LanguageToggle />
           <IconButton
-            accessibilityLabel="Toggle search"
+            accessibilityLabel={t('transactions.toggleSearch')}
             active={searchActive}
             onPress={onToggleSearch}
           >
@@ -33,7 +39,7 @@ export function TransactionsHeader({
             />
           </IconButton>
           <IconButton
-            accessibilityLabel="Toggle filters"
+            accessibilityLabel={t('transactions.toggleFilters')}
             active={filtersActive}
             onPress={onToggleFilters}
           >
@@ -44,9 +50,7 @@ export function TransactionsHeader({
           </IconButton>
         </View>
       </View>
-      <Text style={styles.subtitle}>
-        Manage your incoming and outgoing transfers.
-      </Text>
+      <Text style={styles.subtitle}>{t('transactions.subtitle')}</Text>
     </View>
   );
 }
@@ -59,7 +63,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: spacing.md,
   },
-  title: { fontSize: 32, fontWeight: '800', color: colors.text },
-  actions: { flexDirection: 'row', gap: spacing.sm },
+  title: { fontSize: 26, fontWeight: '800', color: colors.text, flexShrink: 1 },
+  actions: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   subtitle: { ...typography.body, color: colors.textSecondary },
 });

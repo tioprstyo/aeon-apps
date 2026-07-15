@@ -11,13 +11,15 @@ describe('useTransactionStore', () => {
     expect(state.transactions).toHaveLength(0);
   });
 
-  it('loads transactions sorted newest first', async () => {
+  it('loads the transactions payload as-is (ordering is the UI\'s job)', async () => {
     await useTransactionStore.getState().fetchTransactions();
 
     const { status, transactions } = useTransactionStore.getState();
     expect(status).toBe('success');
     expect(transactions).toHaveLength(4);
-    expect(transactions.map(t => t.refId)).toEqual(['123ABC', '789GHI', '456DEF', '101JKL']);
+    // The store keeps the raw backend order; the list sorts by date via the
+    // bottom-sheet filter (covered in filter.test.ts).
+    expect(transactions.map(t => t.refId)).toEqual(['123ABC', '456DEF', '789GHI', '101JKL']);
   });
 
   it('looks up a transaction by refId', async () => {

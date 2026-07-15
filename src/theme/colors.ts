@@ -13,11 +13,11 @@ export const colors = {
   textMuted: '#9AA0AA',
   textInverse: '#FFFFFF',
 
-  // Transaction direction accents
+  // Transaction direction accents (positive = green, negative = red)
   incoming: '#16A34A',
   incomingSurface: '#E7F6EC',
-  outgoing: '#EA580C',
-  outgoingSurface: '#FDEDE3',
+  outgoing: '#DC2626',
+  outgoingSurface: '#FDECEC',
 
   success: '#16A34A',
   warning: '#EA580C',

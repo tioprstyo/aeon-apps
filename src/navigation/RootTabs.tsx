@@ -11,16 +11,17 @@ import {
   Wallet,
 } from 'lucide-react-native';
 import { colors, typography } from '@/theme';
+import { useTranslation } from '@/i18n';
 import { RootTabParamList } from './types';
 import { PlaceholderScreen } from './PlaceholderScreen';
 import { TransactionsStack } from './TransactionsStack';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-const HomeTab = () => <PlaceholderScreen title="Home" />;
-const AccountsTab = () => <PlaceholderScreen title="Accounts" />;
-const RecipientsTab = () => <PlaceholderScreen title="Recipients" />;
-const MoreTab = () => <PlaceholderScreen title="More" />;
+const HomeTab = () => <PlaceholderScreen titleKey="tabs.home" />;
+const AccountsTab = () => <PlaceholderScreen titleKey="tabs.accounts" />;
+const RecipientsTab = () => <PlaceholderScreen titleKey="tabs.recipients" />;
+const MoreTab = () => <PlaceholderScreen titleKey="tabs.more" />;
 
 interface TabIconProps {
   color: string;
@@ -61,6 +62,8 @@ const renderTabBarBackground = () => (
 );
 
 export function RootTabs() {
+  const { t } = useTranslation();
+
   return (
     <Tab.Navigator
       initialRouteName="Transactions"
@@ -76,12 +79,15 @@ export function RootTabs() {
       <Tab.Screen
         name="Home"
         component={HomeTab}
-        options={{ tabBarIcon: renderHomeIcon }}
+        options={{ tabBarLabel: t('tabs.home'), tabBarIcon: renderHomeIcon }}
       />
       <Tab.Screen
         name="Accounts"
         component={AccountsTab}
-        options={{ tabBarIcon: renderAccountsIcon }}
+        options={{
+          tabBarLabel: t('tabs.accounts'),
+          tabBarIcon: renderAccountsIcon,
+        }}
       />
       <Tab.Screen
         name="Transactions"
@@ -90,6 +96,7 @@ export function RootTabs() {
           const focused =
             getFocusedRouteNameFromRoute(route) ?? 'TransactionList';
           return {
+            tabBarLabel: t('tabs.transactions'),
             tabBarIcon: TransactionsTabIcon,
             // Hide the tab bar on the full-screen detail view.
             tabBarStyle:
@@ -100,12 +107,15 @@ export function RootTabs() {
       <Tab.Screen
         name="Recipients"
         component={RecipientsTab}
-        options={{ tabBarIcon: renderRecipientsIcon }}
+        options={{
+          tabBarLabel: t('tabs.recipients'),
+          tabBarIcon: renderRecipientsIcon,
+        }}
       />
       <Tab.Screen
         name="More"
         component={MoreTab}
-        options={{ tabBarIcon: renderMoreIcon }}
+        options={{ tabBarLabel: t('tabs.more'), tabBarIcon: renderMoreIcon }}
       />
     </Tab.Navigator>
   );

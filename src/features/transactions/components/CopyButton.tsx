@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { colors, spacing, typography } from '@/theme';
+import { useTranslation } from '@/i18n';
 
 interface CopyButtonProps {
   value: string;
@@ -13,6 +14,7 @@ const RESET_DELAY_MS = 1500;
 
 /** Copies `value` to the clipboard and briefly confirms with a "Copied" label. */
 export function CopyButton({ value, label }: CopyButtonProps) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -37,12 +39,12 @@ export function CopyButton({ value, label }: CopyButtonProps) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Copy ${label}`}
+      accessibilityLabel={t('copy.action', { label })}
       hitSlop={spacing.sm}
       onPress={onPress}
       style={({ pressed }) => [styles.container, pressed && styles.pressed]}>
       {copied ? (
-        <Text style={styles.copied}>Copied</Text>
+        <Text style={styles.copied}>{t('copy.copied')}</Text>
       ) : (
         <View style={styles.icon}>
           <View style={styles.iconBack} />

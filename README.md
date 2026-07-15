@@ -9,6 +9,7 @@ with the ability to share those details externally.
 - **Zustand** for state management
 - **React Navigation** — bottom tabs + native stack
 - **lucide-react-native** icons on a blue design system
+- **English / Bahasa Malaysia** in-app language switch
 - Feature-based architecture, themed design tokens, unit tests
 
 ## Features
@@ -20,8 +21,9 @@ with the ability to share those details externally.
   scrolls beneath, and it hides itself on the full-screen detail view.
 - **Transaction list** — each card shows a direction-tinted category icon,
   transfer name, recipient, date • time, `Ref` ID, a signed colour-coded amount
-  (green incoming / orange outgoing), an **Incoming / Outgoing** badge and a
-  per-item **⋮ actions menu** (view details / share / copy ref).
+  (**green** for incoming / positive, **red** for outgoing / negative), an
+  **Incoming / Outgoing** badge and a per-item **⋮ actions menu**
+  (view details / share / copy ref).
 - **Search** — a header toggle reveals a search field that filters across
   transfer name, recipient and reference ID (animated in/out).
 - **Direction filter** — an always-visible **segmented control**
@@ -39,7 +41,11 @@ with the ability to share those details externally.
   type and amount.
 - **Copy** — tap to copy the reference ID to the clipboard.
 - **Share** — opens the native share sheet with a formatted summary of the
-  transaction, so it can be shared to any app the OS offers.
+  transaction, so it can be shared to any app the OS offers (the summary is
+  localised to the active language).
+- **Language switch** — a header toggle flips the entire UI between **English**
+  and **Bahasa Malaysia** instantly, including tab labels, the share summary and
+  the native actions menu.
 
 ## Getting started
 
@@ -156,7 +162,8 @@ src/
 │       ├── types.ts          #   Transaction model
 │       └── index.ts          #   Public surface of the feature
 ├── components/               # Shared UI (Button, Chip, IconButton,
-│                             #   SearchBar, Screen, BottomSheet)
+│                             #   LanguageToggle, SearchBar, Screen, BottomSheet)
+├── i18n/                     # Language store, EN/MS strings, useTranslation()
 ├── services/api/             # Typed fetch client (integration point)
 ├── theme/                    # Design tokens: colors, spacing, radius, typography
 ├── constants/                # App config & constants
@@ -180,6 +187,12 @@ src/
   holds the raw list.
 - **Typed navigation** — routes and params are declared in
   `src/navigation/types.ts` (`RootStackParamList`).
+- **Localisation** — a tiny Zustand-backed i18n layer (`@/i18n`) keeps `en` as
+  the source-of-truth key set and types every other language against it, so a
+  missing Bahasa Malaysia string is a compile error. Components read strings via
+  the `useTranslation()` hook; non-React code (the native actions menu, the
+  share text) uses the standalone `translate()` helper. Switching language
+  re-renders every consumer instantly — no restart.
 - **Path alias** — `@/*` → `src/*`, configured in `tsconfig.json` (types) and
   `babel.config.js` (runtime, via `babel-plugin-module-resolver`).
 
@@ -206,3 +219,23 @@ test (which mounts the full tab + stack tree). The suite pins the timezone to
 > `19:34` in UTC+7). The **date-range filter** is anchored to the most recent
 > transaction so the fixed sample dataset stays filterable; against a live
 > backend you would anchor to the current date.
+
+## Future improvements
+
+Given more time, the natural next steps would be:
+
+- **Real backend integration** — replace the mocked service with the typed
+  `@/services/api` client, add pagination / infinite scroll and cursor-based
+  loading for large histories.
+- **Persistent preferences** — persist the selected language (and later, theme)
+  with `AsyncStorage` / MMKV and default to the device locale on first launch.
+- **Dark mode** — the design already runs on theme tokens, so a dark palette is
+  mostly a `colors` swap behind a theme provider.
+- **More locales & formatting** — extend i18n beyond EN/MS and localise currency
+  and date formatting per locale (e.g. via `Intl`).
+- **Richer transactions** — server-driven categories/icons, grouping by date,
+  and a running balance.
+- **Broader test coverage** — component/interaction tests with React Native
+  Testing Library and end-to-end flows (Detox / Maestro).
+- **Accessibility & polish** — dynamic type, screen-reader passes and skeleton
+  loaders in place of the spinner.

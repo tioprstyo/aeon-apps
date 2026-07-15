@@ -1,19 +1,21 @@
 import { Share } from 'react-native';
 import { formatDateTime, formatSignedAmount } from '@/utils';
+import { translate } from '@/i18n';
 import { Transaction } from '../types';
 
 /**
- * Build the human-readable message shared to external apps. Kept pure so it can
- * be unit-tested independently of the native Share sheet.
+ * Build the human-readable message shared to external apps, localised to the
+ * active language. Kept free of native calls so it can be unit-tested
+ * independently of the Share sheet.
  */
 export function buildShareMessage(transaction: Transaction): string {
   return [
-    'Transaction Details',
-    `Reference ID: ${transaction.refId}`,
-    `Date: ${formatDateTime(transaction.transferDate)}`,
-    `Recipient: ${transaction.recipientName}`,
-    `Description: ${transaction.transferName}`,
-    `Amount: ${formatSignedAmount(transaction.amount)}`,
+    translate('share.title'),
+    `${translate('share.reference')}: ${transaction.refId}`,
+    `${translate('share.date')}: ${formatDateTime(transaction.transferDate)}`,
+    `${translate('share.recipient')}: ${transaction.recipientName}`,
+    `${translate('share.description')}: ${transaction.transferName}`,
+    `${translate('share.amount')}: ${formatSignedAmount(transaction.amount)}`,
   ].join('\n');
 }
 

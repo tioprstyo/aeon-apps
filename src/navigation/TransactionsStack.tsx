@@ -4,12 +4,14 @@ import {
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 import { colors } from '@/theme';
+import { LanguageToggle } from '@/components';
+import { useTranslation } from '@/i18n';
 import {
   TransactionDetailScreen,
   TransactionListScreen,
 } from '@/features/transactions';
 import { RootStackParamList } from './types';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ChevronLeft } from 'lucide-react-native';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -26,14 +28,25 @@ const BackButton = ({
   );
 };
 
+/** Localised header title — a component so it re-renders on language change. */
+const DetailHeaderTitle = () => {
+  const { t } = useTranslation();
+  return <Text style={styles.headerTitle}>{t('detail.title')}</Text>;
+};
+
 const transactionDetailOptions = ({
   navigation,
 }: {
   navigation: NativeStackNavigationProp<RootStackParamList>;
 }) => ({
-  title: 'Transaction Detail',
   headerBackVisible: false,
+  headerTitle: () => <DetailHeaderTitle />,
   headerLeft: () => <BackButton navigation={navigation} />,
+  headerRight: () => (
+    <View style={styles.translatorContainer}>
+      <LanguageToggle />
+    </View>
+  ),
 });
 
 /** Transactions tab: list (custom header) → detail (native header). */
@@ -63,6 +76,7 @@ export function TransactionsStack() {
 }
 
 const styles = StyleSheet.create({
+  headerTitle: { fontSize: 17, fontWeight: '700', color: colors.text },
   backButton: {
     borderRadius: 100,
 
@@ -81,4 +95,5 @@ const styles = StyleSheet.create({
 
     elevation: 4,
   },
+  translatorContainer: { marginHorizontal: -6 },
 });

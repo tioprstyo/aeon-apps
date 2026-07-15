@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Button, Chip } from '@/components';
 import { colors, radius, spacing, typography } from '@/theme';
+import { TranslationKey, useTranslation } from '@/i18n';
 import type { DateRange, SortOrder } from '../utils/filter';
 
 interface TransactionFiltersSheetProps {
@@ -26,16 +27,16 @@ function sanitizeAmount(value: string): string {
   return rest.length > 0 ? `${whole}.${rest.join('')}` : whole;
 }
 
-const DATE_OPTIONS: { label: string; value: DateRange }[] = [
-  { label: 'All Dates', value: 'all' },
-  { label: '1 Week', value: '1week' },
-  { label: '1 Month', value: '1month' },
-  { label: '3 Months', value: '3month' },
+const DATE_OPTIONS: { labelKey: TranslationKey; value: DateRange }[] = [
+  { labelKey: 'filters.date.all', value: 'all' },
+  { labelKey: 'filters.date.1week', value: '1week' },
+  { labelKey: 'filters.date.1month', value: '1month' },
+  { labelKey: 'filters.date.3month', value: '3month' },
 ];
 
-const SORT_OPTIONS: { label: string; value: SortOrder }[] = [
-  { label: 'Newest first', value: 'newest' },
-  { label: 'Oldest first', value: 'oldest' },
+const SORT_OPTIONS: { labelKey: TranslationKey; value: SortOrder }[] = [
+  { labelKey: 'filters.sort.newest', value: 'newest' },
+  { labelKey: 'filters.sort.oldest', value: 'oldest' },
 ];
 
 export function TransactionFiltersSheet({
@@ -50,36 +51,38 @@ export function TransactionFiltersSheet({
   onReset,
   onApply,
 }: TransactionFiltersSheetProps) {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Filters</Text>
+        <Text style={styles.title}>{t('filters.title')}</Text>
         <Pressable
           accessibilityRole="button"
           onPress={onReset}
           hitSlop={spacing.sm}
         >
-          <Text style={styles.reset}>Reset</Text>
+          <Text style={styles.reset}>{t('filters.reset')}</Text>
         </Pressable>
       </View>
 
-      <Text style={styles.section}>Date range</Text>
+      <Text style={styles.section}>{t('filters.dateRange')}</Text>
       <View style={styles.chips}>
         {DATE_OPTIONS.map(option => (
           <Chip
             key={option.value}
-            label={option.label}
+            label={t(option.labelKey)}
             selected={dateRange === option.value}
             onPress={() => onDateRangeChange(option.value)}
           />
         ))}
       </View>
 
-      <Text style={styles.section}>Amount range</Text>
+      <Text style={styles.section}>{t('filters.amountRange')}</Text>
       <View style={styles.amountRow}>
         <TextInput
           style={styles.amountInput}
-          placeholder="Min amount"
+          placeholder={t('filters.minAmount')}
           placeholderTextColor={colors.textMuted}
           keyboardType="decimal-pad"
           inputMode="decimal"
@@ -89,7 +92,7 @@ export function TransactionFiltersSheet({
         <Text style={styles.amountSeparator}>–</Text>
         <TextInput
           style={styles.amountInput}
-          placeholder="Max amount"
+          placeholder={t('filters.maxAmount')}
           placeholderTextColor={colors.textMuted}
           keyboardType="decimal-pad"
           inputMode="decimal"
@@ -98,19 +101,23 @@ export function TransactionFiltersSheet({
         />
       </View>
 
-      <Text style={styles.section}>Sort by</Text>
+      <Text style={styles.section}>{t('filters.sortBy')}</Text>
       <View style={styles.chips}>
         {SORT_OPTIONS.map(option => (
           <Chip
             key={option.value}
-            label={option.label}
+            label={t(option.labelKey)}
             selected={sort === option.value}
             onPress={() => onSortChange(option.value)}
           />
         ))}
       </View>
 
-      <Button label="Apply Filters" onPress={onApply} style={styles.apply} />
+      <Button
+        label={t('filters.apply')}
+        onPress={onApply}
+        style={styles.apply}
+      />
     </View>
   );
 }

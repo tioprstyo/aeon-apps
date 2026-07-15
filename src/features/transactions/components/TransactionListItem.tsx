@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { EllipsisVertical } from 'lucide-react-native';
 import { colors, radius, spacing, typography } from '@/theme';
 import { formatDate, formatTime } from '@/utils';
+import { useTranslation } from '@/i18n';
 import { getDirection, Transaction } from '../types';
 import { getCategoryIcon } from '../utils/categoryIcon';
 import { AmountText } from './AmountText';
@@ -15,6 +16,7 @@ interface TransactionListItemProps {
 }
 
 function TransactionListItemComponent({ transaction, onPress, onMore }: TransactionListItemProps) {
+  const { t } = useTranslation();
   const isOutgoing = getDirection(transaction.amount) === 'outgoing';
   const tint = isOutgoing ? colors.outgoing : colors.incoming;
   const tintSurface = isOutgoing ? colors.outgoingSurface : colors.incomingSurface;
@@ -37,7 +39,9 @@ function TransactionListItemComponent({ transaction, onPress, onMore }: Transact
           </Text>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={`More actions for ${transaction.transferName}`}
+            accessibilityLabel={t('list.moreActions', {
+              name: transaction.transferName,
+            })}
             hitSlop={spacing.sm}
             onPress={() => onMore(transaction)}
             style={({ pressed }) => [styles.more, pressed && styles.pressed]}>
@@ -56,7 +60,9 @@ function TransactionListItemComponent({ transaction, onPress, onMore }: Transact
           <Text style={styles.meta}>
             {formatDate(transaction.transferDate)} • {formatTime(transaction.transferDate)}
           </Text>
-          <Text style={styles.meta}>Ref {transaction.refId}</Text>
+          <Text style={styles.meta}>
+            {t('list.ref', { refId: transaction.refId })}
+          </Text>
         </View>
 
         <DirectionBadge amount={transaction.amount} style={styles.badge} />

@@ -10,6 +10,7 @@ import {
 import { BlurView } from '@react-native-community/blur';
 import { ArrowDown, ArrowUp } from 'lucide-react-native';
 import { colors, spacing, typography } from '@/theme';
+import { TranslationKey, useTranslation } from '@/i18n';
 import type { TypeFilter } from '../utils/filter';
 
 interface TypeSegmentedControlProps {
@@ -19,7 +20,7 @@ interface TypeSegmentedControlProps {
 
 interface Segment {
   value: TypeFilter;
-  label: string;
+  labelKey: TranslationKey;
   renderIcon?: (active: boolean) => React.ReactNode;
 }
 
@@ -27,15 +28,15 @@ const ICON_SIZE = 16;
 const TRACK_PADDING = 4;
 
 const SEGMENTS: Segment[] = [
-  { value: 'all', label: 'All' },
+  { value: 'all', labelKey: 'segment.all' },
   {
     value: 'incoming',
-    label: 'Incoming',
+    labelKey: 'segment.incoming',
     renderIcon: () => <ArrowDown size={ICON_SIZE} color={colors.incoming} />,
   },
   {
     value: 'outgoing',
-    label: 'Outgoing',
+    labelKey: 'segment.outgoing',
     renderIcon: () => <ArrowUp size={ICON_SIZE} color={colors.outgoing} />,
   },
 ];
@@ -44,6 +45,7 @@ export function TypeSegmentedControl({
   value,
   onChange,
 }: TypeSegmentedControlProps) {
+  const { t } = useTranslation();
   const [trackWidth, setTrackWidth] = useState(0);
   const translateX = useRef(new Animated.Value(0)).current;
 
@@ -98,7 +100,7 @@ export function TypeSegmentedControl({
           >
             {segment.renderIcon?.(selected)}
             <Text style={[styles.label, selected && styles.labelSelected]}>
-              {segment.label}
+              {t(segment.labelKey)}
             </Text>
           </Pressable>
         );

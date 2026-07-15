@@ -18,8 +18,15 @@ import {
 } from 'react-native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { BottomSheet, Button, Screen, SearchBar } from '@/components';
+import {
+  BottomSheet,
+  Button,
+  Screen,
+  SearchBar,
+  showToast,
+} from '@/components';
 import { colors, spacing, typography } from '@/theme';
+import { useTranslation } from '@/i18n';
 import type { RootStackScreenProps } from '@/navigation';
 import { useTransactionStore } from '../store/useTransactionStore';
 import { TransactionListItem } from '../components/TransactionListItem';
@@ -61,6 +68,7 @@ function ListSeparator() {
 export function TransactionListScreen({
   navigation,
 }: RootStackScreenProps<'TransactionList'>) {
+  const { t } = useTranslation();
   const transactions = useTransactionStore(s => s.transactions);
   const status = useTransactionStore(s => s.status);
   const error = useTransactionStore(s => s.error);
@@ -113,9 +121,12 @@ export function TransactionListScreen({
         onShare: () => {
           shareTransaction(transaction).catch(() => undefined);
         },
-        onCopyRef: () => Clipboard.setString(transaction.refId),
+        onCopyRef: () => {
+          Clipboard.setString(transaction.refId);
+          showToast(t('copy.refCopied'));
+        },
       }),
-    [openDetail],
+    [openDetail, t],
   );
 
   const toggleSearch = useCallback(() => {
@@ -179,7 +190,7 @@ export function TransactionListScreen({
             ref={searchRef}
             value={query}
             onChangeText={setQuery}
-            placeholder="Search by recipient, reference, or transaction"
+            placeholder={t('transactions.searchPlaceholder')}
           />
         ) : null}
 
@@ -192,12 +203,12 @@ export function TransactionListScreen({
         </View>
       ) : status === 'error' && transactions.length === 0 ? (
         <View style={styles.centered}>
-          <Text style={styles.errorTitle}>Something went wrong</Text>
+          <Text style={styles.errorTitle}>{t('list.errorTitle')}</Text>
           <Text style={styles.errorBody}>
-            {error ?? 'Unable to load transactions.'}
+            {error ?? t('list.errorBody')}
           </Text>
           <Button
-            label="Try again"
+            label={t('list.retry')}
             onPress={fetchTransactions}
             style={styles.retry}
           />
@@ -226,11 +237,11 @@ export function TransactionListScreen({
           keyboardDismissMode="on-drag"
           ListEmptyComponent={
             <View style={styles.centered}>
-              <Text style={styles.emptyTitle}>No transactions found</Text>
+              <Text style={styles.emptyTitle}>{t('list.emptyTitle')}</Text>
               <Text style={styles.emptyBody}>
                 {hasActiveFilters
-                  ? 'Try adjusting your search or filters.'
-                  : 'Your transactions will appear here.'}
+                  ? t('list.emptyFiltered')
+                  : t('list.emptyDefault')}
               </Text>
             </View>
           }

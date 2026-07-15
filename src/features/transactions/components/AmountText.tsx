@@ -9,8 +9,8 @@ interface AmountTextProps {
 }
 
 /**
- * Renders a signed currency amount, coloured green for incoming and orange for
- * outgoing money.
+ * Renders a signed currency amount, coloured green for incoming (positive) and
+ * red for outgoing (negative) money.
  */
 export function AmountText({ amount, style }: AmountTextProps) {
   const isOutgoing = amount < 0;
